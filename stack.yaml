@@ -41,7 +41,6 @@ packages:
 # extra-deps: []
 extra-deps:
 - ghc-8.4.3@sha256:07ee8fb5dab414c35f93d5d5afc1ecaa65a49c409346e5063436cc8b838cd754
-- matrix
 
 # Override default flag values for local packages and extra-deps
 # flags: {}
