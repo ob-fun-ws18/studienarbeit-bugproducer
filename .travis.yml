@@ -24,7 +24,6 @@ addons:
 
 install:
 # Build dependencies
-- stack build
 - stack --no-terminal --install-ghc test --only-dependencies
 
 script:
