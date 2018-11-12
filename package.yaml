@@ -1,10 +1,10 @@
 name:                HidatoGenerator
 version:             0.1.0.0
-github:              "githubuser/HidatoGenerator"
+github:              "ob-fun-ws18/studienarbeit-bugproducer"
 license:             BSD3
-author:              "Author name here"
+author:              "Tripolt, Mark"
 maintainer:          "example@example.com"
-copyright:           "2018 Author name here"
+copyright:           "2018 Tripolt, Mark"
 
 extra-source-files:
 - README.md
