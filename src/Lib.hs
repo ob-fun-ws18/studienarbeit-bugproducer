@@ -3,6 +3,18 @@ module Lib where
 import Data.Matrix
 import System.Random
 
+------------------------------------------------------------
+-- Data
+------------------------------------------------------------
+data Playground = Playground (Matrix Int) Neighbour
+    deriving(Eq,Show)
+
+getMatrix :: Playground -> Matrix Int
+getMatrix (Playground matrix _ ) = matrix
+
+getNeighbour :: Playground -> Neighbour
+getNeighbour (Playground _ neighbour) = neighbour
+
 data Neighbour = Neighbour Int (Int,Int)
     deriving(Eq,Show)
 
@@ -12,20 +24,24 @@ getValue (Neighbour value _ ) = value
 getPosition :: Neighbour -> (Int,Int)
 getPosition (Neighbour _ position) = position
 
-someFunc :: IO ()
-someFunc = putStrLn "someFunc"
-
+------------------------------------------------------------
+-- Functions
+------------------------------------------------------------
 generateEmptyMatrix :: Int -> Int -> Matrix Int
 generateEmptyMatrix x y = zero x y
 
-setStartPoint :: Matrix Int -> Int -> Int -> Matrix Int
+setStartPoint :: Matrix Int -> Int -> Int -> Playground
 setStartPoint matrix x y = r where
-    r = setElem 1 (x, y) matrix
+    m = setElem 1 (x, y) matrix
+    r = Playground m (Neighbour 1 (x,y))
 
-setEndPoint :: Matrix Int -> Int -> Int -> Matrix Int
-setEndPoint matrix x y = r where
-    r = setElem 16 (x, y) matrix
+setEndPoint :: Playground -> Int -> Int -> Playground
+setEndPoint playground x y = r where
+    matrix = getMatrix playground
+    m = setElem 16 (x, y) matrix
+    r = Playground m (Neighbour 16 (x,y))
 
+    
 calcNeighbours :: Matrix Int -> Int -> Int -> [Neighbour]
 calcNeighbours matrix x y = r where
     upperLeft = upperLeftNeighbour matrix x y
@@ -88,18 +104,23 @@ lowerRightNeighbour matrix x y =
         then Neighbour (getElem (x+1) (y+1) matrix) ((x+1),(y+1)) 
         else Neighbour (-1) ((x+1),(y+1)) 
 
-setPoint :: Matrix Int -> Int -> Int -> Matrix Int
-setPoint matrix x y = r where
-    r = setElem 2 (x, y) matrix
+setPoint :: Playground -> Int -> Int -> Playground
+setPoint playground x y = r where
+    matrix = getMatrix playground
+    m = setElem 2 (x, y) matrix
+    r = Playground m (Neighbour 2 (x,y))
 
+
+------------------------------------------------------------
+-- Game Start
+------------------------------------------------------------
 startGame :: IO ()
 startGame = do
     putStrLn "*** Game started ***"
     print matrix
-    print right
     where
         empty = generateEmptyMatrix 4 4
         start = setStartPoint empty 1 1
         start2 = setPoint start 2 1
-        matrix = setEndPoint start2 4 4
-        right = upperNeighbour matrix 2 1 
+        playground = setEndPoint start2 4 4
+        matrix = getMatrix playground
