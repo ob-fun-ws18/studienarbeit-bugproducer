@@ -12,7 +12,6 @@ Das Ziel ist es, die leeren Felder sollen so auszufüllen, dass sich eine Kette 
 [Quelle](https://www.puzzlesandbrains.com/Hidatomain.php)
 
 #### Dokumentation
-[Dokumentation](https://ob-algdatii-ss18.github.io/leistungsnachweis-bugproducer/doxygen/html/)
 
 #### Externe Packages
 [Matrix](http://hackage.haskell.org/package/matrix)
