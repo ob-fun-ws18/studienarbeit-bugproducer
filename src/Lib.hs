@@ -30,8 +30,8 @@ getPosition (Field _ position) = position
 generateEmptyMatrix :: Int -> Int -> Matrix Int
 generateEmptyMatrix x y = zero x y
 
-setStartPoint :: Matrix Int -> Int -> Int -> Playground
-setStartPoint matrix x y = r where
+setStartPoint :: Matrix Int -> (Int,Int) -> Playground
+setStartPoint matrix (x,y) = r where
     m = setElem 1 (x, y) matrix
     r = Playground m (Field 1 (x,y))
 
@@ -42,64 +42,64 @@ setEndPoint playground x y = r where
     r = Playground m (Field 16 (x,y))
 
     
-calcNeighbours :: Matrix Int -> Int -> Int -> [Field]
-calcNeighbours matrix x y = r where
-    upperLeft = upperLeftNeighbour matrix x y
-    upper = upperNeighbour matrix x y
-    upperRight = upperRightNeighbour matrix x y
-    left = leftNeighbour matrix x y
-    right = rightNeighbour matrix x y
-    lowerLeft = lowerLeftNeighbour matrix x y
-    lower = lowerNeighbour matrix x y
-    lowerRight = lowerRightNeighbour matrix x y
+calcNeighbours :: Matrix Int -> (Int,Int) -> [Field]
+calcNeighbours matrix (x,y) = r where
+    upperLeft = upperLeftNeighbour matrix (x,y)
+    upper = upperNeighbour matrix (x,y)
+    upperRight = upperRightNeighbour matrix (x,y)
+    left = leftNeighbour matrix (x,y)
+    right = rightNeighbour matrix (x,y)
+    lowerLeft = lowerLeftNeighbour matrix (x,y)
+    lower = lowerNeighbour matrix (x,y)
+    lowerRight = lowerRightNeighbour matrix (x,y)
     neighbourList = [upperLeft,upper,upperRight,left,right,lowerLeft,lower,lowerRight]
     neighbourListFinal = filter (\x -> getValue x /= -1) neighbourList
     r = neighbourListFinal
 
-upperNeighbour :: Matrix Int -> Int -> Int -> Field
-upperNeighbour matrix x y = 
+upperNeighbour :: Matrix Int -> (Int,Int) -> Field
+upperNeighbour matrix (x,y) = 
     if x-1 >= 1 
         then Field (getElem (x-1) y matrix) ((x-1),y)
         else Field (-1) ((x-1),y)
 
-lowerNeighbour :: Matrix Int -> Int -> Int -> Field
-lowerNeighbour matrix x y = 
+lowerNeighbour :: Matrix Int -> (Int,Int) -> Field
+lowerNeighbour matrix (x,y) = 
     if x+1 <= 4 
         then Field (getElem (x+1) y matrix) ((x+1),y) 
         else Field (-1) ((x+1),y)
 
-leftNeighbour :: Matrix Int -> Int -> Int -> Field
-leftNeighbour matrix x y = 
+leftNeighbour :: Matrix Int ->(Int,Int) -> Field
+leftNeighbour matrix (x,y) = 
     if y-1 >= 1 
         then Field (getElem x (y-1) matrix) (x,(y-1))
         else Field (-1) (x,(y-1))
 
-rightNeighbour :: Matrix Int -> Int -> Int -> Field
-rightNeighbour matrix x y = 
+rightNeighbour :: Matrix Int -> (Int,Int) -> Field
+rightNeighbour matrix (x,y) = 
     if y+1 <= 4 
         then Field (getElem x (y+1) matrix) (x,(y+1)) 
         else Field (-1) (x,(y+1)) 
 
-upperLeftNeighbour :: Matrix Int -> Int -> Int -> Field
-upperLeftNeighbour matrix x y = 
+upperLeftNeighbour :: Matrix Int -> (Int,Int) -> Field
+upperLeftNeighbour matrix (x,y) = 
     if x-1 >= 1 && y-1 >= 1 
         then Field (getElem (x-1) (y-1) matrix) ((x-1),(y-1)) 
         else Field (-1) ((x-1),(y-1))
 
-upperRightNeighbour :: Matrix Int -> Int -> Int -> Field
-upperRightNeighbour matrix x y = 
+upperRightNeighbour :: Matrix Int -> (Int,Int) -> Field
+upperRightNeighbour matrix (x,y) = 
     if x-1 >= 1 && y+1 <= 4 
         then Field (getElem (x-1) (y+1) matrix) ((x-1),(y+1))
         else Field (-1) ((x-1),(y+1))
 
-lowerLeftNeighbour :: Matrix Int -> Int -> Int -> Field
-lowerLeftNeighbour matrix x y = 
+lowerLeftNeighbour :: Matrix Int -> (Int,Int) -> Field
+lowerLeftNeighbour matrix (x,y) = 
     if x+1 <= 4 && y-1 >= 1 
         then Field (getElem (x+1) (y-1) matrix) ((x+1),(y-1)) 
         else Field (-1) ((x+1),(y-1)) 
 
-lowerRightNeighbour :: Matrix Int -> Int -> Int -> Field
-lowerRightNeighbour matrix x y = 
+lowerRightNeighbour :: Matrix Int -> (Int,Int) -> Field
+lowerRightNeighbour matrix (x,y) = 
     if x+1 <= 4 && y+1 <= 4 
         then Field (getElem (x+1) (y+1) matrix) ((x+1),(y+1)) 
         else Field (-1) ((x+1),(y+1)) 
@@ -107,8 +107,11 @@ lowerRightNeighbour matrix x y =
 setPoint :: Playground -> Int -> Int -> Playground
 setPoint playground x y = r where
     matrix = getMatrix playground
+    field = getField playground
+    neighbours = calcNeighbours matrix (getPosition field)
     m = setElem 2 (x, y) matrix
     r = Playground m (Field 2 (x,y))
+
 
 generateNextField :: Playground -> Playground
 generateNextField playground = r where
@@ -122,16 +125,25 @@ setupPlayground list = r where
     f = Field 0 (0,0)
 
     
+shuffle :: [a] -> IO [a]
+shuffle x = if length x < 2 then return x else do
+    i <- System.Random.randomRIO (0, length(x)-1)
+    r <- shuffle (take i x ++ drop (i+1) x)
+    return (x!!i : r)
+
 ------------------------------------------------------------
 -- Game Start
 ------------------------------------------------------------
 startGame :: IO ()
 startGame = do
     putStrLn "*** Game started ***"
-    print matrix
+    print mat
+    print neighbours
     where
         empty = generateEmptyMatrix 4 4
-        start = setStartPoint empty 1 1
-        start2 = setPoint start 2 1
-        playground = setEndPoint start2 4 4
-        matrix = getMatrix playground
+        start = setStartPoint empty (1,1)
+        mat = getMatrix start
+        field = getField start
+        neighbours = calcNeighbours mat (getPosition field)
+        shuff = shuffle neighbours
+

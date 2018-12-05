@@ -37,7 +37,7 @@ executables:
     - HidatoGenerator
     - matrix
     - random
-    - MonadRandom
+    - random-shuffle
 
 tests:
   HidatoGenerator-test:
@@ -51,6 +51,6 @@ tests:
     - HidatoGenerator
     - matrix
     - random
-    - MonadRandom
+    - random-shuffle
     - hspec
     - QuickCheck

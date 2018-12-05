@@ -16,14 +16,14 @@ main = do
     --print list
 
     ls <- randomList2 (1, 8)
-    putStrLn $ show $ take 1000 ls
+    putStrLn $ show $ take 4 ls
 
+    startGame
 
     where
         list = [1,2,3,4]
         mylist = randomList2 (1,8)
         emptypg = setupPlayground list
-
 
 
 randomList2 :: (Int, Int) -> IO [Int]
@@ -37,3 +37,5 @@ randomList n = do
   r  <- randomRIO (1,6)
   rs <- randomList (n-1)
   return (r:rs) 
+
+
