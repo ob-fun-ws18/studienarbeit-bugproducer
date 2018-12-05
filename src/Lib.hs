@@ -13,7 +13,7 @@ getMatrix :: Playground -> Matrix Int
 getMatrix (Playground matrix _ ) = matrix
 
 getField :: Playground -> Field
-getField (Playground _ neighbour) = neighbour
+getField (Playground _ field) = field
 
 data Field = Field Int (Int,Int)
     deriving(Eq,Show)
@@ -110,7 +110,18 @@ setPoint playground x y = r where
     m = setElem 2 (x, y) matrix
     r = Playground m (Field 2 (x,y))
 
+generateNextField :: Playground -> Playground
+generateNextField playground = r where
+    r = playground
 
+
+setupPlayground :: [Int] -> Playground
+setupPlayground list = r where
+    r = Playground m f
+    m = zero 4 4
+    f = Field 0 (0,0)
+
+    
 ------------------------------------------------------------
 -- Game Start
 ------------------------------------------------------------
