@@ -2,21 +2,27 @@ module Lib where
 
 import Data.Matrix
 import System.Random
+import Control.Monad
+import Data.List
 
 ------------------------------------------------------------
 -- Data
 ------------------------------------------------------------
-data Playground = Playground (Matrix Int) Field
-    deriving(Eq,Show)
+data Playground = Playground { 
+    matrix :: Matrix Int,
+    field :: Field    
+} deriving(Eq,Show)
 
 getMatrix :: Playground -> Matrix Int
-getMatrix (Playground matrix _ ) = matrix
+getMatrix (Playground m _ ) = m
 
 getField :: Playground -> Field
-getField (Playground _ field) = field
+getField (Playground _ f) = f
 
-data Field = Field Int (Int,Int)
-    deriving(Eq,Show)
+data Field = Field {
+    val :: Int,
+    pos :: (Int,Int)
+}deriving(Eq,Show)
 
 getValue :: Field -> Int
 getValue (Field value _ ) = value
@@ -104,32 +110,53 @@ lowerRightNeighbour matrix (x,y) =
         then Field (getElem (x+1) (y+1) matrix) ((x+1),(y+1)) 
         else Field (-1) ((x+1),(y+1)) 
 
-setPoint :: Playground -> Int -> Int -> Playground
-setPoint playground x y = r where
-    matrix = getMatrix playground
-    field = getField playground
-    neighbours = calcNeighbours matrix (getPosition field)
-    m = setElem 2 (x, y) matrix
-    r = Playground m (Field 2 (x,y))
 
 
-generateNextField :: Playground -> Playground
-generateNextField playground = r where
-    r = playground
+setPoint :: Playground -> Int -> IO Playground
+setPoint playground v = do
+    let matrix = getMatrix playground
+    let field = getField playground
+    let neighbours = calcNeighbours matrix (getPosition field)
+    shuffled <- shuffleList neighbours
+    print shuffled
+    shuffField <- returnFieldFromNeighbours shuffled
+    let m1 = setElem v (getPosition shuffField) matrix
+    let r = Playground m1 shuffField
+    return r
 
 
-setupPlayground :: [Int] -> Playground
+setupPlayground :: Int -> Playground
 setupPlayground list = r where
     r = Playground m f
     m = zero 4 4
     f = Field 0 (0,0)
 
     
-shuffle :: [a] -> IO [a]
-shuffle x = if length x < 2 then return x else do
+shuffleList :: [a] -> IO [a]
+shuffleList x = if length x < 2 then return x else do
     i <- System.Random.randomRIO (0, length(x)-1)
-    r <- shuffle (take i x ++ drop (i+1) x)
+    r <- shuffleList (take i x ++ drop (i+1) x)
     return (x!!i : r)
+
+
+returnFieldFromNeighbours :: [a] -> IO a
+returnFieldFromNeighbours list = do
+    shuff <- shuffleList list
+    return (shuff !! 0)
+
+buildPlayground :: IO ()
+buildPlayground = do
+    let empty = generateEmptyMatrix 4 4 -- später mit Parametern
+    let start = setStartPoint empty (1,1)
+    let list = [2,3] -- ebenfalls Parameter
+    pg <- mapM_ myPrint list
+    start <- mapM (setPoint start) list
+
+    print start
+
+myPrint :: Int -> IO ()
+myPrint i = do
+    print i
 
 ------------------------------------------------------------
 -- Game Start
@@ -139,11 +166,28 @@ startGame = do
     putStrLn "*** Game started ***"
     print mat
     print neighbours
+    shuff <- shuffleList neighbours 
+    field <- returnFieldFromNeighbours shuff
+    print shuff
+    print field
+
+    pg <- setPoint start 2
+    
+
+    print (getMatrix pg)
+
+
+    buildPlayground
     where
         empty = generateEmptyMatrix 4 4
         start = setStartPoint empty (1,1)
+        
         mat = getMatrix start
         field = getField start
         neighbours = calcNeighbours mat (getPosition field)
-        shuff = shuffle neighbours
+
+        --list = [Field 0 (2,1),Field 0 (2,2),Field 0 (1,2)]
+        --first = list!!0 
+
+        
 

@@ -13,17 +13,15 @@ main = do
     --input <- readLn :: IO Int
     --putStrLn("folgendes wurde eingegeben:" ++ show input)
 
-    --print list
-
     ls <- randomList2 (1, 8)
     putStrLn $ show $ take 4 ls
 
     startGame
+    
 
     where
         list = [1,2,3,4]
         mylist = randomList2 (1,8)
-        emptypg = setupPlayground list
 
 
 randomList2 :: (Int, Int) -> IO [Int]
