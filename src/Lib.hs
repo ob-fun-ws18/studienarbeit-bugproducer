@@ -3,25 +3,31 @@ module Lib where
 import Data.Matrix
 import System.Random
 import Control.Monad
-import Data.List
-
 ------------------------------------------------------------
 -- Data
 ------------------------------------------------------------
 data Playground = Playground { 
     matrix :: Matrix Int,
-    field :: Field ,
-    size :: Int   
+    field :: Field,
+    startField :: Field,
+    size :: Int,
+    solved :: Bool
 } deriving(Eq,Show)
 
 getMatrix :: Playground -> Matrix Int
-getMatrix (Playground m _  _) = m
+getMatrix (Playground m _ _ _ _) = m
 
 getField :: Playground -> Field
-getField (Playground _ f _) = f
+getField (Playground _ f _ _ _) = f
+
+getStartField :: Playground -> Field
+getStartField (Playground _ _ sf _ _) = sf
 
 getSize :: Playground -> Int
-getSize (Playground _ _ s) = s
+getSize (Playground _ _ _ si _) = si
+
+getStatus :: Playground -> Bool
+getStatus (Playground _ _ _ _ sol) = sol
 
 data Field = Field {
     val :: Int,
@@ -43,18 +49,18 @@ generateEmptyMatrix x y = zero x y
 setStartPoint :: Matrix Int -> (Int,Int) -> Int -> Playground
 setStartPoint matrix (x,y) size = r where
     m = setElem 1 (x, y) matrix
-    r = Playground m (Field 1 (x,y)) size
+    r = Playground m (Field 1 (x,y)) (Field 1 (x,y)) size False
 
 calcNeighbours :: Matrix Int -> (Int,Int) -> Int -> [Field]
-calcNeighbours matrix (x,y) size = r where
-    upperLeft = upperLeftNeighbour matrix (x,y) size
-    upper = upperNeighbour matrix (x,y) size
-    upperRight = upperRightNeighbour matrix (x,y) size
-    left = leftNeighbour matrix (x,y) size
-    right = rightNeighbour matrix (x,y) size
-    lowerLeft = lowerLeftNeighbour matrix (x,y) size
-    lower = lowerNeighbour matrix (x,y) size
-    lowerRight = lowerRightNeighbour matrix (x,y) size
+calcNeighbours matrix (xValue,yValue) size = r where
+    upperLeft = upperLeftNeighbour matrix (xValue,yValue) size
+    upper = upperNeighbour matrix (xValue,yValue) size
+    upperRight = upperRightNeighbour matrix (xValue,yValue) size
+    left = leftNeighbour matrix (xValue,yValue) size
+    right = rightNeighbour matrix (xValue,yValue) size
+    lowerLeft = lowerLeftNeighbour matrix (xValue,yValue) size
+    lower = lowerNeighbour matrix (xValue,yValue) size
+    lowerRight = lowerRightNeighbour matrix (xValue,yValue) size
     neighbourList = [upperLeft,upper,upperRight,left,right,lowerLeft,lower,lowerRight]
     neighbourListFinal = filter (\x -> getValue x == 0) neighbourList
     r = neighbourListFinal
@@ -116,14 +122,15 @@ setPoint playground v = do
     shuffled <- shuffleList neighbours
     shuffField <- returnFieldFromNeighbours shuffled
     let m1 = setElem v (getPosition shuffField) mat
-    return (decider playground m1 shuffField neighbours)
+    let nextField = Field v (getPosition shuffField)
+    return (decider playground m1 nextField neighbours)
 
 
 decider :: Playground -> Matrix Int -> Field -> [Field]-> Playground
 decider playground m1 shuffField neighbours = 
     if neighbours == [] 
         then playground
-        else Playground m1 shuffField (getSize playground)
+        else Playground m1 shuffField (getStartField playground) (getSize playground) (getStatus playground)
 
 shuffleList :: [a] -> IO [a]
 shuffleList x = if length x < 2 then return x else do
@@ -145,8 +152,8 @@ buildPlayground size = do
     let start = setStartPoint empty (x,y) size
     let list = [2..size*size] 
     filled <-  setPoints start list
-    let toPrint = getMatrix filled
-    print toPrint
+    --let toPrint = getMatrix filled
+    --print toPrint
     return filled
 
 setPoints :: Playground -> [Int] -> IO Playground
@@ -180,13 +187,25 @@ zeroRate mat = f where
     lengthFiltered = length filtered
     f = (fromIntegral lengthFiltered) / (fromIntegral lengthList)
 
+
+generatePlaygroundToPlayOn :: Playground -> IO Playground
+generatePlaygroundToPlayOn playground = do
+    let list = toList (getMatrix playground)
+    let list2 = map (\x -> if x == 0 then -1 else x) list
+    let list3 = map (\x -> if x /= 1 && x /= (maximum list2) && x /= -1 && x `mod` 4 /= 0 then 0 else x) list2
+    let pg = Playground (fromList (getSize playground) (getSize playground) list3) (getField playground) (getStartField playground) (getSize playground) (getStatus playground)
+    return pg
+
 ------------------------------------------------------------
 -- Game Start
 ------------------------------------------------------------
-startGame :: IO ()
-startGame = do
-    putStrLn "*** Game started ***"
-    playground <- setupPlayground 6
-    let rate = zeroRate (getMatrix playground)
-    print rate
-    putStrLn "*** Game ended ***"
+startGame ::Int -> IO Playground
+startGame size  = do
+    --putStrLn "*** Game started ***"
+    playground <- setupPlayground size
+    --let rate = zeroRate (getMatrix playground)
+    --print rate
+    --print (getMatrix playground)
+    sol <- generatePlaygroundToPlayOn playground
+    --print (getMatrix sol)
+    return sol

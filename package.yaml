@@ -38,6 +38,7 @@ executables:
     - matrix
     - random
     - random-shuffle
+    - split
 
 tests:
   HidatoGenerator-test:
@@ -54,3 +55,4 @@ tests:
     - random-shuffle
     - hspec
     - QuickCheck
+    - split
