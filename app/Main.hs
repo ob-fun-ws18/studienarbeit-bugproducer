@@ -47,15 +47,21 @@ handler playground string
 
 enterValue :: Playground -> Int -> (Int,Int) -> Playground
 enterValue playground value (x,y) = pg where
-  mat = setElem value (x,y) (getMatrix playground)
-  pg = Playground mat (getField playground) (getStartField playground) (getSize playground) (getStatus playground)
+  --mat = setElem value (x,y) (getMatrix playground)
+  mat = if (getElem x y (getControlMatrix playground)) == 0
+          then setElem value (x,y) (getMatrix playground)
+          else (getMatrix playground)
+  pg = Playground mat (getControlMatrix playground) (getField playground) (getStartField playground) (getSize playground) (getStatus playground)
+  
+
+
 
 checkSolution :: Playground -> Field -> Playground
 checkSolution playground field =  
   if (calcSolutionNeighbours (getMatrix playground) field (getSize playground)) == [(getField playground)]
-    then Playground (getMatrix playground)  (getField playground) (getStartField playground) (getSize playground) True
+    then Playground (getMatrix playground) (getControlMatrix playground) (getField playground) (getStartField playground) (getSize playground) True
     else if (calcSolutionNeighbours (getMatrix playground) field (getSize playground)) == []
-      then Playground (getMatrix playground)  (getField playground) (getStartField playground) (getSize playground) False
+      then Playground (getMatrix playground) (getControlMatrix playground) (getField playground) (getStartField playground) (getSize playground) False
       else checkSolution playground ((calcSolutionNeighbours (getMatrix playground) field (getSize playground))!!0)
 
 calcSolutionNeighbours:: Matrix Int -> Field -> Int -> [Field]

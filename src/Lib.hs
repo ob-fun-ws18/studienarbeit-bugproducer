@@ -8,6 +8,7 @@ import Control.Monad
 ------------------------------------------------------------
 data Playground = Playground { 
     matrix :: Matrix Int,
+    controlMatrix :: Matrix Int,
     field :: Field,
     startField :: Field,
     size :: Int,
@@ -15,19 +16,22 @@ data Playground = Playground {
 } deriving(Eq,Show)
 
 getMatrix :: Playground -> Matrix Int
-getMatrix (Playground m _ _ _ _) = m
+getMatrix (Playground m _ _ _ _ _) = m
+
+getControlMatrix :: Playground -> Matrix Int
+getControlMatrix (Playground _ cm _ _ _ _) = cm
 
 getField :: Playground -> Field
-getField (Playground _ f _ _ _) = f
+getField (Playground _  _ f _ _ _) = f
 
 getStartField :: Playground -> Field
-getStartField (Playground _ _ sf _ _) = sf
+getStartField (Playground _  _ _ sf _ _) = sf
 
 getSize :: Playground -> Int
-getSize (Playground _ _ _ si _) = si
+getSize (Playground _ _ _  _ si _) = si
 
 getStatus :: Playground -> Bool
-getStatus (Playground _ _ _ _ sol) = sol
+getStatus (Playground _ _ _ _ _ sol) = sol
 
 data Field = Field {
     val :: Int,
@@ -49,7 +53,7 @@ generateEmptyMatrix x y = zero x y
 setStartPoint :: Matrix Int -> (Int,Int) -> Int -> Playground
 setStartPoint matrix (x,y) size = r where
     m = setElem 1 (x, y) matrix
-    r = Playground m (Field 1 (x,y)) (Field 1 (x,y)) size False
+    r = Playground m m (Field 1 (x,y)) (Field 1 (x,y)) size False
 
 calcNeighbours :: Matrix Int -> (Int,Int) -> Int -> [Field]
 calcNeighbours matrix (xValue,yValue) size = r where
@@ -130,7 +134,7 @@ decider :: Playground -> Matrix Int -> Field -> [Field]-> Playground
 decider playground m1 shuffField neighbours = 
     if neighbours == [] 
         then playground
-        else Playground m1 shuffField (getStartField playground) (getSize playground) (getStatus playground)
+        else Playground m1 m1 shuffField (getStartField playground) (getSize playground) (getStatus playground)
 
 shuffleList :: [a] -> IO [a]
 shuffleList x = if length x < 2 then return x else do
@@ -193,7 +197,8 @@ generatePlaygroundToPlayOn playground = do
     let list = toList (getMatrix playground)
     let list2 = map (\x -> if x == 0 then -1 else x) list
     let list3 = map (\x -> if x /= 1 && x /= (maximum list2) && x /= -1 && x `mod` 4 /= 0 then 0 else x) list2
-    let pg = Playground (fromList (getSize playground) (getSize playground) list3) (getField playground) (getStartField playground) (getSize playground) (getStatus playground)
+    let m = (fromList (getSize playground) (getSize playground) list3)
+    let pg = Playground m m (getField playground) (getStartField playground) (getSize playground) (getStatus playground)
     return pg
 
 ------------------------------------------------------------
