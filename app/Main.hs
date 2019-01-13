@@ -11,20 +11,18 @@ import Data.Char
 main ::IO ()
 main = do
   hSetBuffering stdout NoBuffering
-  putStrLn "      -- ! Welcome to the Hidato Generator ! -- "
-  putStrLn "Please enter the size of the playground you want to play on: "
+  putStrLn "               ---- ! Welcome to the Hidato Generator ! ---- "
+  putStrLn "  -------- Please enter the size of the playground you want to play on:"
   input <- readLn :: IO Int
-  putStrLn("Your " ++ show input ++ "x" ++ show input ++ " Playground is now being generated.")
-  putStrLn("Please use the following commands to play the game. Have fun!")
-  putStrLn("      ---- Use the following to enter a new Value:        enter Value Row Column    ----   ")
-  putStrLn("      ---- Use the following to validate your solution:   check                     ----   ")
-  putStrLn("Your Playground is ready, have fun!")
+  putStrLn("  -------- Your " ++ show input ++ "x" ++ show input ++ " Playground is now being generated.")
+  putStrLn("  -------- Please use the following commands to play the game. Have fun! ")
+  putStrLn("      ---- Use the following to enter a new Value:        enter Value Row Column")
+  putStrLn("      ---- Use the following to validate your solution:   check")
+  putStrLn("  -------- Your Playground is ready, have fun!")
   pg <- startGame input
   print (getMatrix pg)
-
   gameHandler pg
-
-  putStrLn "Thanks for playing!"
+  putStrLn "  -------- Thanks for playing!"
 
 gameHandler:: Playground -> IO ()
 gameHandler playground = do
@@ -33,8 +31,9 @@ gameHandler playground = do
   let pg = handler playground input
   print (getMatrix pg)
   if getStatus pg == True
-    then putStrLn("CONGRATULATIONS YOUR SOLUTION IS CORRECT")
+    then putStrLn("-------- !!! CONGRATULATIONS YOUR SOLUTION IS CORRECT !!! --------")
     else gameHandler pg
+
 
 handler :: Playground -> String -> Playground
 handler playground string
@@ -53,12 +52,13 @@ enterValue playground value (x,y) = pg where
 
 checkSolution :: Playground -> Field -> Playground
 checkSolution playground field =  
-  if (calcSolutionNeighbours (getMatrix playground) field (getSize playground)) == (getField playground)
+  if (calcSolutionNeighbours (getMatrix playground) field (getSize playground)) == [(getField playground)]
     then Playground (getMatrix playground)  (getField playground) (getStartField playground) (getSize playground) True
-    else checkSolution playground (calcSolutionNeighbours (getMatrix playground) field (getSize playground))
-  
+    else if (calcSolutionNeighbours (getMatrix playground) field (getSize playground)) == []
+      then Playground (getMatrix playground)  (getField playground) (getStartField playground) (getSize playground) False
+      else checkSolution playground ((calcSolutionNeighbours (getMatrix playground) field (getSize playground))!!0)
 
-calcSolutionNeighbours:: Matrix Int -> Field -> Int -> Field
+calcSolutionNeighbours:: Matrix Int -> Field -> Int -> [Field]
 calcSolutionNeighbours matrix field size = f where
   upperLeft = upperLeftNeighbour matrix (getPosition field) size
   upper = upperNeighbour matrix (getPosition field) size
@@ -70,4 +70,4 @@ calcSolutionNeighbours matrix field size = f where
   lowerRight = lowerRightNeighbour matrix (getPosition field) size
   neighbourList = [upperLeft,upper,upperRight,left,right,lowerLeft,lower,lowerRight]
   filteredList = filter (\x -> (getValue x) == ((getValue field) + 1)) neighbourList
-  f = filteredList!!0
+  f = filteredList
