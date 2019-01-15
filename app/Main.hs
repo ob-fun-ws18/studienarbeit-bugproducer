@@ -2,11 +2,6 @@ module Main where
 
 import System.IO (hSetBuffering, BufferMode(NoBuffering), stdout)
 import Lib
-import Data.Matrix
-import System.Random
-import Data.List
-import Data.List.Split
-import Data.Char
 
 -- | Handles the first user input and starts the Game.
 main :: IO ()
