@@ -1,5 +1,5 @@
 # Hidato 
-
+[![Build Status](https://travis-ci.com/ob-fun-ws18/studienarbeit-bugproducer.svg?branch=master)](https://travis-ci.com/ob-fun-ws18/studienarbeit-bugproducer.svg?branch=master)
 
 
 #### Definition
@@ -12,6 +12,7 @@ Das Ziel ist es, die leeren Felder sollen so auszufüllen, dass sich eine Kette 
 [Quelle](https://www.puzzlesandbrains.com/Hidatomain.php)
 
 #### Dokumentation
+[Haddock](https://ob-fun-ws18.github.io/studienarbeit-bugproducer/docs/doc/index.html)
 
 #### Externe Packages
 [Matrix](http://hackage.haskell.org/package/matrix)
