@@ -53,7 +53,7 @@ getPosition :: Field -> (Int,Int)
 getPosition (Field _ position) = position
 
 ------------------------------------------------------------
--- Functions
+-- Functions and Procedures
 ------------------------------------------------------------
 
 -- | Creates a zero Matrix.
