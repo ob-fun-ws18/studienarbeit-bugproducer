@@ -4,11 +4,11 @@ module LibSpec (spec) where
 import Lib
 import Test.Hspec
 import Test.QuickCheck
-import Data.Matrix
 import System.Random
+import Data.Matrix
 
 spec :: Spec
---testMatrix = matrix 4 4 $ \(i,j) -> j + ((i-1) * 4)
+--testMatrix = Matrix.matrix 4 4 $ \(i,j) -> j + ((i-1) * 4)
 spec =
     describe "Neighbour Test" $ do
         it "test test" $

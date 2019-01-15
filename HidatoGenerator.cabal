@@ -4,16 +4,16 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: b68fc8ce9d338fa090bfc5182e2b3973d4e9f1c2d845464769c606a2fe14c150
+-- hash: c580f1c4bb48af4f196d86245810d1577369620e4fa8c0a7beb283de688d92b0
 
 name:           HidatoGenerator
 version:        0.1.0.0
 description:    Please see the README on GitHub at <https://github.com/githubuser/HidatoGenerator#readme>
-homepage:       https://github.com/githubuser/HidatoGenerator#readme
-bug-reports:    https://github.com/githubuser/HidatoGenerator/issues
-author:         Author name here
+homepage:       https://github.com/ob-fun-ws18/studienarbeit-bugproducer#readme
+bug-reports:    https://github.com/ob-fun-ws18/studienarbeit-bugproducer/issues
+author:         Tripolt, Mark
 maintainer:     example@example.com
-copyright:      2018 Author name here
+copyright:      2018 Tripolt, Mark
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
@@ -23,7 +23,7 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/HidatoGenerator
+  location: https://github.com/ob-fun-ws18/studienarbeit-bugproducer
 
 library
   exposed-modules:
@@ -36,8 +36,6 @@ library
       base >=4.7 && <5
     , matrix
     , random
-    , random-shuffle
-    , split
   default-language: Haskell2010
 
 executable HidatoGenerator-exe
@@ -52,25 +50,25 @@ executable HidatoGenerator-exe
     , base >=4.7 && <5
     , matrix
     , random
-    , random-shuffle
-    , split
   default-language: Haskell2010
 
 test-suite HidatoGenerator-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      CalcNeighboursSpec
+      GetterSpec
+      LibSpec
+      PlaygroundSpec
       Paths_HidatoGenerator
   hs-source-dirs:
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       HidatoGenerator
+    , QuickCheck
     , base >=4.7 && <5
+    , hspec
     , matrix
     , random
-    , random-shuffle
-    , hspec
-    , QuickCheck
-    , split
   default-language: Haskell2010

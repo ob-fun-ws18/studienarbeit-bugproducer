@@ -3,17 +3,29 @@ module Lib where
 import System.IO (hSetBuffering, BufferMode(NoBuffering), stdout)
 import Data.Matrix
 import System.Random
+
 ------------------------------------------------------------
 -- Data
 ------------------------------------------------------------
+
 data Playground = Playground {
-        matrix :: Matrix Int -- ^ Matrix used for filling and playing.
+        normalMatrix :: Matrix Int -- ^ Matrix used for filling and playing.
     ,   controlMatrix :: Matrix Int -- ^ Matrix used to validate the Solution.
     ,   field :: Field -- ^ Field that was most recently used.
     ,   startField :: Field -- ^ The Starting Field of the Game.
     ,   size :: Int -- ^ Size of the Playground.
     ,   solved :: Bool -- ^ Indicates if the last checked solution is correct.
 } deriving(Eq,Show)
+ 
+
+data Field = Field {
+        val :: Int -- ^ Value of the field.
+    ,   pos :: (Int,Int) -- ^ Position of the field.
+}deriving(Eq,Show)
+
+------------------------------------------------------------
+-- Getters for Data
+------------------------------------------------------------
 
 -- | Getter for the matrix of the playground.
 getMatrix :: Playground -> Matrix Int
@@ -38,11 +50,6 @@ getSize (Playground _ _ _  _ si _) = si
 -- | Getter for the solved status of the playground.
 getStatus :: Playground -> Bool
 getStatus (Playground _ _ _ _ _ sol) = sol
-
-data Field = Field {
-        val :: Int -- ^ Value of the field.
-    ,   pos :: (Int,Int) -- ^ Position of the field.
-}deriving(Eq,Show)
 
 -- | Getter for the value of the field.
 getValue :: Field -> Int

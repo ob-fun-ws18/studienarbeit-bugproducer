@@ -21,6 +21,8 @@ description:         Please see the README on GitHub at <https://github.com/gith
 
 dependencies:
 - base >= 4.7 && < 5
+- random
+- matrix
 
 library:
   source-dirs: src
@@ -35,10 +37,6 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - HidatoGenerator
-    - matrix
-    - random
-    - random-shuffle
-    - split
 
 tests:
   HidatoGenerator-test:
@@ -50,9 +48,5 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - HidatoGenerator
-    - matrix
-    - random
-    - random-shuffle
     - hspec
     - QuickCheck
-    - split
