@@ -1,5 +1,5 @@
 # Hidato 
-[![Build Status](https://travis-ci.com/ob-fun-ws18/studienarbeit-bugproducer.svg?branch=master)](https://travis-ci.com/ob-fun-ws18/studienarbeit-bugproducer.svg?branch=master)
+
 
 
 #### Definition
