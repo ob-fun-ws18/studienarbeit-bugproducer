@@ -11,12 +11,26 @@ Das Ziel ist es, die leeren Felder sollen so auszufüllen, dass sich eine Kette 
 
 [Quelle](https://www.puzzlesandbrains.com/Hidatomain.php)
 
-#### Dokumentation
+
+## Build it:
+```sh
+stack build
+```
+
+## Run it:
+```sh
+stack exec HidatoGenerator-exe
+```
+## Have Fun! :smiley:
+
+
+
+## Dokumentation
 [Haddock](https://ob-fun-ws18.github.io/studienarbeit-bugproducer/docs/doc/index.html)
 
-#### Code Coverage
+## Code Coverage
 [HPC](https://ob-fun-ws18.github.io/studienarbeit-bugproducer/docs/hpc/index.html)
 
-#### Externe Packages
+## Externe Packages
 [Matrix](http://hackage.haskell.org/package/matrix)
 [Random](http://hackage.haskell.org/package/random)
