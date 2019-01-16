@@ -21,6 +21,11 @@ stack build
 ```sh
 stack exec HidatoGenerator-exe
 ```
+## How it should look:
+
+![HidatoExample](https://raw.githubusercontent.com/ob-fun-ws18/studienarbeit-bugproducer/master/docs/HidatoExample.JPG)
+
+
 ## Have Fun! :smiley:
 
 
